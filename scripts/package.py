@@ -89,8 +89,7 @@ def main() -> int:
                     print(f"  {k}")
         print("\nEnvie os NOVOS e ALTERADOS (e apague os REMOVIDOS no servidor).")
     print(
-        "
-Lembretes: requirements.txt alterado => `pip install -r requirements.txt` no servidor;"
+        "\nLembretes: requirements.txt alterado => `pip install -r requirements.txt` no servidor;"
         "\n           migrations/ alterado => `python -m alembic upgrade head`;"
         "\n           api.final.wsgi alterado => copie para /apps_wsgi/<app>.wsgi."
     )
