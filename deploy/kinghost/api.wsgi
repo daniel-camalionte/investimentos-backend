@@ -13,19 +13,19 @@ SITE_PACKAGES = os.path.join(
 )
 
 # O venv precisa vir ANTES dos pacotes do sistema (/usr/local/lib/...), que no servidor têm
-# versões antigas (ex.: typing_extensions) e quebrariam o pydantic. `site.addsitedir` só
-# acrescenta ao FIM do sys.path, então reordenamos.
-_before = list(sys.path)
-site.addsitedir(SITE_PACKAGES)
-_added = [p for p in sys.path if p not in _before]
-sys.path[:] = _added + [p for p in sys.path if p not in _added]
-sys.path.insert(0, APP_DIR)
+# versões antigas (ex.: typing_extensions) e quebrariam o pydantic.
+# Atenção: o mod_wsgi reaproveita o mesmo processo ao recarregar este arquivo, então o sys.path
+# pode já conter o venv no FIM de uma execução anterior. Por isso removemos e reinserimos sempre.
+site.addsitedir(SITE_PACKAGES)  # também processa arquivos .pth
+sys.path[:] = [p for p in sys.path if p not in (SITE_PACKAGES, APP_DIR)]
+sys.path[0:0] = [APP_DIR, SITE_PACKAGES]
 os.chdir(APP_DIR)
 
-# se o mod_wsgi/sistema já importou alguma versão do sistema, descarta para reimportar do venv
-for _name in ("typing_extensions",):
-    _mod = sys.modules.get(_name)
-    if _mod is not None and not (getattr(_mod, "__file__", "") or "").startswith(VENV):
+# Descarta módulos que ficaram carregados (versão do sistema ou import que falhou antes),
+# para serem reimportados a partir do venv.
+_PREFIXES = ("typing_extensions", "pydantic", "pydantic_core", "pydantic_settings", "flask_openapi3")
+for _name in list(sys.modules):
+    if any(_name == p or _name.startswith(p + ".") for p in _PREFIXES):
         del sys.modules[_name]
 
 from app import create_app  # noqa: E402
