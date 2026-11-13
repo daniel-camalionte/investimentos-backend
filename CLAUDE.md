@@ -32,4 +32,6 @@ python scripts/check_env.py                          # diagnóstico de ambiente
   schema muda só por migração Alembic. **Local = STG, produção = Master** (a app barra o contrário).
   Nunca escreva credenciais em código, docs, testes ou commits.
 - **Testes**: toda rota nova vem com teste (caminho feliz + erro + autorização).
+- **Deploy**: após mudar código que vai ao servidor, rode `python scripts/package.py` e informe ao
+  usuário a lista de arquivos novos/alterados que ele precisa enviar por FTP (`dist/` não é versionado).
 - **Commits**: mensagens em português, no imperativo, escopo claro.

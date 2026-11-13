@@ -46,6 +46,12 @@ python -m alembic upgrade head      # aplica (local => STG)
 
 Saúde: `GET /api/health/ready` (200 com `database: ok`; 503 se o banco cair; sem detalhes internos).
 
+## Empacotar para o servidor
+
+```bash
+python scripts/package.py     # gera dist/ e lista o que mudou desde o último pacote
+```
+
 ## Qualidade
 
 ```bash

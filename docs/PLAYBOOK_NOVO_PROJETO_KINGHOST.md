@@ -164,8 +164,15 @@ No servidor: `chmod 600 .env`.
 
 ## 8. Deploy na KingHost (passo a passo)
 
-Pasta de upload: gere um pacote limpo (sem `.venv`, `tests`, `.git`, `.env`, `__pycache__`):
-`app/`, `scripts/`, `migrations/`, `wsgi.py`, `alembic.ini`, `requirements.txt`.
+Pasta de upload: gere o pacote com o script (nunca monte à mão):
+
+```bash
+python scripts/package.py
+```
+
+Ele cria `dist/api/` (para `/apps_wsgi/<nome>/`) e `dist/api.final.wsgi` (para `/apps_wsgi/<nome>.wsgi`),
+sem `.venv`, `tests`, `.git`, `.env` nem `__pycache__`. A cada execução lista **o que mudou desde o
+último pacote** (novos/alterados/removidos): envie só isso nas atualizações.
 
 ### 8.1 Diagnóstico (descobrir o Python real do servidor WSGI)
 1. Substitua `/apps_wsgi/<nome>.wsgi` por `deploy/kinghost/api.diagnostic.wsgi`.
@@ -208,7 +215,7 @@ Confira os headers (HSTS, `X-Frame-Options`, CSP) e que `/api/docs/swagger` dá 
 `DOCS_ENABLED=true`).
 
 ### 8.6 Atualizações futuras
-FTP dos arquivos alterados → `pip install -r requirements.txt` (se mudou dependência) →
+`python scripts/package.py` → FTP dos arquivos que ele listar como novos/alterados → `pip install -r requirements.txt` (se mudou dependência) →
 `alembic upgrade head` (se há migração) → **salvar o `.wsgi`** ou reiniciar pelo painel. O
 `api.wsgi` limpa os módulos em cache, então salvar o arquivo recarrega código e `.env`. Se algo
 não refletir, use o botão de reiniciar do painel.
