@@ -19,6 +19,18 @@ curl http://localhost:5055/api/v1/hello
 # {"message":"Hello, World!","service":"investimentos-backend","version":"0.1.0"}
 ```
 
+## Rodando com Docker
+
+```bash
+docker build -t investimentos-backend-api .
+docker compose up -d --no-build     # http://localhost:8000
+docker compose logs -f api
+docker compose down
+```
+
+O container usa Python 3.9, usuário sem privilégios, filesystem somente leitura e gunicorn (mesmo
+contrato WSGI do servidor). Swagger: <http://localhost:8000/docs/swagger>.
+
 ## Qualidade
 
 ```bash

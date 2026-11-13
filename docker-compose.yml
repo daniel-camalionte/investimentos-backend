@@ -1,0 +1,19 @@
+services:
+  api:
+    image: investimentos-backend-api
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: development
+      SECRET_KEY: chave-somente-para-docker-local-nao-usar-em-producao-0123456789
+      CORS_ORIGINS: http://localhost:3000
+      LOG_LEVEL: INFO
+    read_only: true            # filesystem imutável: a API não precisa gravar em disco
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
