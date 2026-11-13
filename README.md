@@ -55,6 +55,7 @@ python -m ruff check . && python -m ruff format --check .
 
 ## Documentação
 
+- **[Playbook: criar um projeto novo na KingHost do zero](docs/PLAYBOOK_NOVO_PROJETO_KINGHOST.md)**
 - [Deploy na KingHost](docs/DEPLOY_KINGHOST.md)
 - [Arquitetura, segurança e evolução com agentes](docs/ARCHITECTURE.md)
 - [Convenções para agentes de código](CLAUDE.md)
