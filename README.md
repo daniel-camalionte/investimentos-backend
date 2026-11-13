@@ -31,6 +31,21 @@ docker compose down
 O container usa Python 3.9, usuário sem privilégios, filesystem somente leitura e gunicorn (mesmo
 contrato WSGI do servidor). Swagger: <http://localhost:8000/api/docs/swagger>.
 
+## Banco de dados
+
+- **MariaDB/MySQL** via SQLAlchemy 2 + PyMySQL; migrações com Alembic (`migrations/`).
+- **Local = sempre STG; produção = Master.** O ambiente decide a base (`DB_TARGET` é derivado) e a
+  aplicação **recusa iniciar** se `APP_ENV` diferente de `production` apontar para `master`.
+- Credenciais só em variáveis de ambiente (`.env` local ignorado pelo git; `.env` no servidor).
+
+```bash
+python scripts/check_db.py          # testa a conexão (somente leitura, não imprime a senha)
+python -m alembic revision --autogenerate -m "descricao"   # gera migração
+python -m alembic upgrade head      # aplica (local => STG)
+```
+
+Saúde: `GET /api/health/ready` (200 com `database: ok`; 503 se o banco cair; sem detalhes internos).
+
 ## Qualidade
 
 ```bash

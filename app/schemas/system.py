@@ -11,3 +11,9 @@ class HealthResponse(BaseModel):
     status: str = Field(..., examples=["ok"])
     service: str
     version: str
+
+
+class ReadinessResponse(BaseModel):
+    status: str = Field(..., examples=["ok"], description="ok | degraded")
+    database: str = Field(..., examples=["ok"], description="ok | unavailable | not_configured")
+    service: str

@@ -38,6 +38,20 @@ LOG_LEVEL=INFO
 Em `production` a aplicação **se recusa a iniciar** com `SECRET_KEY` fraca ou CORS `*`.
 Proteja o arquivo: `chmod 600 .env`.
 
+### Banco de dados (Master)
+
+No `.env` do servidor, acrescente as variáveis `DB_HOST`, `DB_USER`, `DB_PASSWORD` e `DB_NAME` da base
+**Master** (modelo em `.env.production.example`). Depois:
+
+```bash
+cd ~/apps_wsgi/api && source ../venv/bin/activate
+pip install -r requirements.txt     # novas libs: SQLAlchemy, PyMySQL, alembic
+python scripts/check_db.py          # deve mostrar alvo: master e "conexão OK"
+python -m alembic upgrade head      # aplica migrações na Master (quando houver)
+```
+
+Envie também `alembic.ini` e a pasta `migrations/`. Verifique `https://<dominio>/api/health/ready`.
+
 ## 4. Validar antes de ligar o servidor web
 
 ```bash

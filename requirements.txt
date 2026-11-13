@@ -8,3 +8,6 @@ pydantic==2.13.5
 pydantic-settings==2.11.0
 flask-openapi3==4.2.1
 flask-openapi3-swagger==5.31.0
+SQLAlchemy==2.0.57
+PyMySQL==1.2.4
+alembic==1.16.5

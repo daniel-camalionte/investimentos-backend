@@ -28,5 +28,8 @@ python scripts/check_env.py                          # diagnóstico de ambiente
 - **Documentação**: toda rota declara `summary`, docstring e `responses={...}` com modelos Pydantic
   de `app/schemas/` (o Swagger sai deles). Swagger em `/api/docs/swagger` (off em produção). Rotas internas são `/v1/...`; o prefixo `/api`
   vem da montagem (KingHost/wsgi.py).
+- **Banco**: acesso só por `app.db.get_session()` (sessão por requisição) dentro de repositories;
+  schema muda só por migração Alembic. **Local = STG, produção = Master** (a app barra o contrário).
+  Nunca escreva credenciais em código, docs, testes ou commits.
 - **Testes**: toda rota nova vem com teste (caminho feliz + erro + autorização).
 - **Commits**: mensagens em português, no imperativo, escopo claro.

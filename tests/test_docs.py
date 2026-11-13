@@ -65,6 +65,8 @@ def test_local_wsgi_mounts_api_under_prefix(monkeypatch):
     import importlib
 
     monkeypatch.setenv("APP_ENV", "testing")
+    for var in ("DB_HOST", "DB_USER", "DB_NAME", "DB_PASSWORD"):  # hermético: ignora o .env local
+        monkeypatch.setenv(var, "")
     from app.config import get_settings
 
     get_settings.cache_clear()

@@ -26,7 +26,8 @@ app/
     errors.py        AppError + handlers globais (nunca vazam detalhes internos)
     logging.py       logs JSON estruturados com request_id
   api/
-    health.py        /health (liveness)
+    health.py        /health (liveness) e /health/ready (banco)
+  db/                engine (pool), sessão por requisição, Base declarativa
   schemas/           modelos Pydantic (entrada/saída) — também geram o OpenAPI/Swagger
     v1/              rotas versionadas (internas /v1/..., públicas /api/v1/...)
 wsgi.py              entrada WSGI (objeto `application`)

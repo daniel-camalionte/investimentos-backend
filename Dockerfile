@@ -14,7 +14,8 @@ RUN pip install -r requirements.txt gunicorn==23.0.0
 
 COPY app ./app
 COPY scripts ./scripts
-COPY wsgi.py .
+COPY wsgi.py alembic.ini ./
+COPY migrations ./migrations
 
 # usuário sem privilégios (espelha a ausência de root na hospedagem)
 RUN useradd --system --no-create-home appuser

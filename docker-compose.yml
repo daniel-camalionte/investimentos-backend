@@ -4,11 +4,12 @@ services:
     build: .
     ports:
       - "8000:8000"
+    # Variáveis (inclui DB_* do STG) vêm do .env local, que NUNCA é versionado nem entra na imagem.
+    env_file:
+      - path: .env
+        required: false
     environment:
-      APP_ENV: development
-      SECRET_KEY: chave-somente-para-docker-local-nao-usar-em-producao-0123456789
-      CORS_ORIGINS: http://localhost:3000
-      LOG_LEVEL: INFO
+      APP_ENV: development   # local = sempre STG (a app recusa DB_TARGET=master fora de produção)
     read_only: true            # filesystem imutável: a API não precisa gravar em disco
     tmpfs:
       - /tmp
