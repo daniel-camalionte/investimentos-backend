@@ -1,4 +1,4 @@
-"""Gera a pasta `dist/` pronta para envio (FTP) à KingHost e mostra o que mudou desde o último pacote.
+"""Gera `dist/` para envio (FTP) à KingHost e mostra o que mudou desde o último pacote.
 
     python scripts/package.py
 
@@ -89,7 +89,8 @@ def main() -> int:
                     print(f"  {k}")
         print("\nEnvie os NOVOS e ALTERADOS (e apague os REMOVIDOS no servidor).")
     print(
-        "\nLembretes: requirements.txt alterado => rode `pip install -r requirements.txt` no servidor;"
+        "
+Lembretes: requirements.txt alterado => `pip install -r requirements.txt` no servidor;"
         "\n           migrations/ alterado => `python -m alembic upgrade head`;"
         "\n           api.final.wsgi alterado => copie para /apps_wsgi/<app>.wsgi."
     )
