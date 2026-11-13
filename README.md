@@ -11,11 +11,11 @@ python -m venv .venv
 .venv\Scripts\activate            # Linux: source .venv/bin/activate
 pip install -r requirements-dev.txt
 copy .env.example .env            # Linux: cp .env.example .env
-python -m flask --app wsgi run -p 5055
+python wsgi.py                    # http://localhost:8000
 ```
 
 ```bash
-curl http://localhost:5055/api/v1/hello
+curl http://localhost:8000/api/v1/hello
 # {"message":"Hello, World!","service":"investimentos-backend","version":"0.1.0"}
 ```
 
@@ -29,7 +29,7 @@ docker compose down
 ```
 
 O container usa Python 3.9, usuário sem privilégios, filesystem somente leitura e gunicorn (mesmo
-contrato WSGI do servidor). Swagger: <http://localhost:8000/docs/swagger>.
+contrato WSGI do servidor). Swagger: <http://localhost:8000/api/docs/swagger>.
 
 ## Qualidade
 
@@ -49,14 +49,24 @@ python -m ruff check . && python -m ruff format --check .
 | Método | Rota | Descrição |
 |---|---|---|
 | GET | `/api/v1/hello` | Hello world |
-| GET | `/health` | Verificação de saúde (isenta de rate limit) |
+| GET | `/api/health` | Verificação de saúde (isenta de rate limit) |
+
+Todas as URLs têm o prefixo público `/api`, igual em todos os ambientes:
+
+| Ambiente | Front | API |
+|---|---|---|
+| Local / stg | http://localhost:3000 | http://localhost:8000/api |
+| Produção | https://www.investimentos.kinghost.net | https://www.investimentos.kinghost.net/api |
+
+Internamente a app serve `/v1/...`; quem a monta em `/api` é a hospedagem (produção) ou o
+`wsgi.py` (local).
 
 ## Documentação da API (Swagger)
 
 Com o servidor rodando (fora de produção):
 
-- Swagger UI: <http://localhost:5055/docs/swagger>
-- Contrato OpenAPI: <http://localhost:5055/docs/openapi.json>
+- Swagger UI: <http://localhost:8000/api/docs/swagger>
+- Contrato OpenAPI: <http://localhost:8000/api/docs/openapi.json>
 
 A documentação é gerada dos schemas Pydantic das rotas (`app/schemas/`), então nunca diverge da
 validação. Os arquivos do Swagger UI são servidos localmente (sem CDN). **Em produção fica desligada

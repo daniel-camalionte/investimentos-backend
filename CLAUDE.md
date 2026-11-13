@@ -10,7 +10,7 @@ python -m venv .venv && .venv/Scripts/activate      # Windows; use bin/activate 
 pip install -r requirements-dev.txt
 python -m pytest                                     # testes
 python -m ruff check . && python -m ruff format .    # lint + formatação
-python -m flask --app wsgi run -p 5055               # servidor local (porta 5000 costuma estar ocupada)
+python wsgi.py                                       # servidor local em http://localhost:8000/api
 python scripts/check_env.py                          # diagnóstico de ambiente
 ```
 
@@ -26,6 +26,7 @@ python scripts/check_env.py                          # diagnóstico de ambiente
   genéricos; segredos só por variável de ambiente (`.env` nunca versionado); consultas SQL sempre
   parametrizadas.
 - **Documentação**: toda rota declara `summary`, docstring e `responses={...}` com modelos Pydantic
-  de `app/schemas/` (o Swagger sai deles). Swagger em `/docs/swagger` (off em produção).
+  de `app/schemas/` (o Swagger sai deles). Swagger em `/api/docs/swagger` (off em produção). Rotas internas são `/v1/...`; o prefixo `/api`
+  vem da montagem (KingHost/wsgi.py).
 - **Testes**: toda rota nova vem com teste (caminho feliz + erro + autorização).
 - **Commits**: mensagens em português, no imperativo, escopo claro.

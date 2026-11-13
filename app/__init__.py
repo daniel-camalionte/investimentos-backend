@@ -42,7 +42,7 @@ def create_app(settings: Optional[Settings] = None) -> OpenAPI:
     register_http_hooks(app, is_production=settings.is_production)
     cors.init_app(
         app,
-        resources={r"/api/*": {"origins": settings.cors_origin_list}},
+        resources={r"/v1/*": {"origins": settings.cors_origin_list}},
         methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
         expose_headers=["X-Request-ID"],

@@ -6,7 +6,7 @@ from app.config import Settings
 
 
 def test_security_headers_present(client):
-    h = client.get("/api/v1/hello").headers
+    h = client.get("/v1/hello").headers
     assert h["X-Content-Type-Options"] == "nosniff"
     assert h["X-Frame-Options"] == "DENY"
     assert h["Referrer-Policy"] == "no-referrer"
@@ -34,14 +34,14 @@ def test_production_rejects_wildcard_cors():
 
 
 def test_cors_only_for_allowed_origin(client):
-    ok = client.get("/api/v1/hello", headers={"Origin": "http://localhost:3000"})
+    ok = client.get("/v1/hello", headers={"Origin": "http://localhost:3000"})
     assert ok.headers.get("Access-Control-Allow-Origin") == "http://localhost:3000"
-    bad = client.get("/api/v1/hello", headers={"Origin": "https://evil.example"})
+    bad = client.get("/v1/hello", headers={"Origin": "https://evil.example"})
     assert "Access-Control-Allow-Origin" not in bad.headers
 
 
 def test_rate_limit_returns_429():
     settings = Settings(app_env="development", rate_limit_default="2 per minute", _env_file=None)
     client = create_app(settings).test_client()
-    codes = [client.get("/api/v1/hello").status_code for _ in range(3)]
+    codes = [client.get("/v1/hello").status_code for _ in range(3)]
     assert codes == [200, 200, 429]

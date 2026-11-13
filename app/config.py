@@ -15,7 +15,9 @@ _INSECURE_KEY_MARKER = "troque-esta-chave"
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=_ENV_FILE, env_file_encoding="utf-8", extra="ignore")
 
-    app_env: str = Field(default="development", pattern="^(development|production|testing)$")
+    app_env: str = Field(
+        default="development", pattern="^(development|staging|production|testing)$"
+    )
     secret_key: str = f"{_INSECURE_KEY_MARKER}-em-desenvolvimento-somente"
     cors_origins: str = "http://localhost:3000"
     log_level: str = "INFO"
@@ -25,9 +27,11 @@ class Settings(BaseSettings):
     database_url: Optional[str] = None
     # Documentação Swagger: padrão = ligada fora de produção. Defina DOCS_ENABLED para forçar.
     docs_enabled: Optional[bool] = None
-    # Prefixo onde a hospedagem monta a app (ex.: "/api" no KingHost). Usado só no OpenAPI/Swagger
-    # para o "Try it out" chamar a URL pública correta. Vazio quando a app está na raiz do domínio.
-    public_base_path: str = ""
+    # Prefixo público da API: https://dominio/<prefixo>/v1/...
+    # Produção: a hospedagem monta a app nele (KingHost: nome da aplicação).
+    # Local: o wsgi.py emula a montagem. Também alimenta o "Try it out" do Swagger.
+    # Vazio = app na raiz do domínio.
+    public_base_path: str = "/api"
 
     @property
     def is_production(self) -> bool:

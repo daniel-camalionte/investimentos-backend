@@ -68,9 +68,9 @@ Antigo (genérico):
 ## 6. Testar em produção
 
 ```bash
-curl -i https://seu-dominio/api/v1/hello
+curl -i https://www.investimentos.kinghost.net/api/v1/hello
 # {"message":"Hello, World!","service":"investimentos-backend","version":"0.1.0"}
-curl -i https://seu-dominio/health
+curl -i https://www.investimentos.kinghost.net/api/health
 ```
 
 ## Documentação (Swagger) em produção
@@ -96,9 +96,10 @@ testes iniciais), adicione `DOCS_ENABLED=true` ao `.env` do servidor e reinicie;
   venv no *início*.
 - **O mod_wsgi reaproveita o processo** ao recarregar o `.wsgi`: o `sys.path` e os módulos da
   tentativa anterior continuam em memória. O `api.wsgi` limpa esse estado a cada execução.
-- **Prefixo de montagem.** Com "Uma ou mais aplicações", a app fica em `/<nome-da-app>`. Com a app
-  chamada `api`, as rotas ficam em `/api/api/v1/hello`. Defina `PUBLIC_BASE_PATH=/api` no `.env`
-  para o Swagger ("Try it out") chamar a URL certa. Na raiz do domínio/subdomínio, deixe vazio.
+- **Prefixo de montagem.** Com "Uma ou mais aplicações", a app fica em `/<nome-da-app>`. A app
+  chamada `api` é montada em `/api`; por isso as rotas internas são `/v1/...` (sem `/api`) e a URL
+  pública é `https://www.investimentos.kinghost.net/api/v1/hello`. O `.env` de produção usa
+  `PUBLIC_BASE_PATH=/api` (padrão) para o Swagger chamar a URL certa. Modelo: `.env.production.example`.
 - **Mudanças:** código novo exige reiniciar a app (ou salvar o `.wsgi`); alterar só o `.env` não
   basta, pois ele é lido na inicialização.
 - **Logs:** o erro do Python aparece no log de erros do Apache (painel). Mensagens

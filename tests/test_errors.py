@@ -7,7 +7,7 @@ def test_404_is_json_and_generic(client):
 
 
 def test_405_is_json(client):
-    resp = client.post("/api/v1/hello")
+    resp = client.post("/v1/hello")
     assert resp.status_code == 405
     assert resp.get_json()["error"]["code"] == "method_not_allowed"
 

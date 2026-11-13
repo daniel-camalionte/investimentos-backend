@@ -2,7 +2,7 @@ from app.version import __version__
 
 
 def test_hello_world(client):
-    resp = client.get("/api/v1/hello")
+    resp = client.get("/v1/hello")
     assert resp.status_code == 200
     assert resp.get_json() == {
         "message": "Hello, World!",

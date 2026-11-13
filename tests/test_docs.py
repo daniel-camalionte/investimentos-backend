@@ -5,7 +5,7 @@ from app.config import Settings
 def test_openapi_spec_describes_routes(client):
     spec = client.get("/docs/openapi.json").get_json()
     assert spec["info"]["title"] == "Investimentos API"
-    assert "/api/v1/hello" in spec["paths"]
+    assert "/v1/hello" in spec["paths"]
     assert "/health" in spec["paths"]
     assert "HelloResponse" in spec["components"]["schemas"]
 
@@ -24,7 +24,7 @@ def test_swagger_assets_are_local(client):
 
 
 def test_api_csp_stays_strict(client):
-    csp = client.get("/api/v1/hello").headers["Content-Security-Policy"]
+    csp = client.get("/v1/hello").headers["Content-Security-Policy"]
     assert csp == "default-src 'none'; frame-ancestors 'none'"
 
 
@@ -33,7 +33,7 @@ def test_docs_disabled_by_default_in_production():
     client = create_app(settings).test_client()
     assert client.get("/docs/swagger").status_code == 404
     assert client.get("/docs/openapi.json").status_code == 404
-    assert client.get("/api/v1/hello").status_code == 200
+    assert client.get("/v1/hello").status_code == 200
 
 
 def test_docs_can_be_enabled_in_production():
@@ -49,6 +49,33 @@ def test_openapi_server_uses_public_base_path():
     assert spec["servers"][0]["url"] == "/api"
 
 
-def test_openapi_server_defaults_to_root(client):
+def test_openapi_server_defaults_to_api_prefix(client):
     spec = client.get("/docs/openapi.json").get_json()
+    assert spec["servers"][0]["url"] == "/api"
+
+
+def test_openapi_server_root_when_prefix_empty():
+    settings = Settings(app_env="testing", public_base_path="", _env_file=None)
+    spec = create_app(settings).test_client().get("/docs/openapi.json").get_json()
     assert spec["servers"][0]["url"] == "/"
+
+
+def test_local_wsgi_mounts_api_under_prefix(monkeypatch):
+    """wsgi.py emula a montagem da hospedagem: /api/v1/hello (e não /v1/hello) na borda."""
+    import importlib
+
+    monkeypatch.setenv("APP_ENV", "testing")
+    from app.config import get_settings
+
+    get_settings.cache_clear()
+    import wsgi
+
+    importlib.reload(wsgi)
+    client = wsgi.application
+    from werkzeug.test import Client
+
+    c = Client(client)
+    assert c.get("/api/v1/hello").status_code == 200
+    assert c.get("/api/health").status_code == 200
+    assert c.get("/v1/hello").status_code == 404
+    get_settings.cache_clear()

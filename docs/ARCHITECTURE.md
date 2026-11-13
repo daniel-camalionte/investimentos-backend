@@ -28,7 +28,7 @@ app/
   api/
     health.py        /health (liveness)
   schemas/           modelos Pydantic (entrada/saída) — também geram o OpenAPI/Swagger
-    v1/              rotas versionadas (/api/v1/...)
+    v1/              rotas versionadas (internas /v1/..., públicas /api/v1/...)
 wsgi.py              entrada WSGI (objeto `application`)
 scripts/check_env.py diagnóstico do servidor
 tests/               pytest
@@ -54,7 +54,7 @@ tarefas agendadas e aos agentes.
 - Config falha na inicialização em produção com `SECRET_KEY` fraca ou CORS `*`.
 - Cabeçalhos: `nosniff`, `X-Frame-Options`, CSP `default-src 'none'`, `Referrer-Policy`,
   `Permissions-Policy`, `Cache-Control: no-store`, HSTS em produção.
-- CORS com lista de origens explícita, só em `/api/*`.
+- CORS com lista de origens explícita, só em `/v1/*`.
 - Rate limit global por IP; limite de tamanho do corpo (1 MB).
 - `X-Request-ID` só é aceito se bem formado (evita log injection).
 - Erros 5xx genéricos para o cliente; detalhe só no log.
