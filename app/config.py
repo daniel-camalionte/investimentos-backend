@@ -20,10 +20,16 @@ class Settings(BaseSettings):
     rate_limit_storage_uri: str = "memory://"
     max_content_length: int = 1_048_576
     database_url: Optional[str] = None
+    # Documentação Swagger: padrão = ligada fora de produção. Defina DOCS_ENABLED para forçar.
+    docs_enabled: Optional[bool] = None
 
     @property
     def is_production(self) -> bool:
         return self.app_env == "production"
+
+    @property
+    def docs_on(self) -> bool:
+        return self.docs_enabled if self.docs_enabled is not None else not self.is_production
 
     @property
     def is_testing(self) -> bool:

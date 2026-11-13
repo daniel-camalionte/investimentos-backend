@@ -63,6 +63,11 @@ curl -i https://seu-dominio/api/v1/hello
 curl -i https://seu-dominio/health
 ```
 
+## Documentação (Swagger) em produção
+
+Por segurança, `/docs/*` fica **desligado** quando `APP_ENV=production`. Para ligar (ex.: durante os
+testes iniciais), adicione `DOCS_ENABLED=true` ao `.env` do servidor e reinicie; depois desligue.
+
 ## Observações
 
 - **Rate limit:** o armazenamento `memory://` é por processo. Com vários workers do uWSGI o limite

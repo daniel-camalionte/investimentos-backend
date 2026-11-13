@@ -19,6 +19,8 @@ DEPENDENCIES = {
     "orjson": "orjson",
     "pydantic": "pydantic",
     "pydantic_settings": "pydantic-settings",
+    "flask_openapi3": "flask-openapi3",
+    "flask_openapi3_swagger": "flask-openapi3-swagger",
 }
 
 

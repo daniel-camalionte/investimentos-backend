@@ -25,5 +25,7 @@ python scripts/check_env.py                          # diagnóstico de ambiente
 - **Segurança**: valide toda entrada com Pydantic; nunca logue segredos/dados pessoais; erros 5xx
   genéricos; segredos só por variável de ambiente (`.env` nunca versionado); consultas SQL sempre
   parametrizadas.
+- **Documentação**: toda rota declara `summary`, docstring e `responses={...}` com modelos Pydantic
+  de `app/schemas/` (o Swagger sai deles). Swagger em `/docs/swagger` (off em produção).
 - **Testes**: toda rota nova vem com teste (caminho feliz + erro + autorização).
 - **Commits**: mensagens em português, no imperativo, escopo claro.

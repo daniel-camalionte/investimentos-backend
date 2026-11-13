@@ -1,21 +1,35 @@
 from typing import Optional
 
-from flask import Flask
+from flask_openapi3 import Info, OpenAPI
 
 from app.api import register_blueprints
 from app.config import Settings, get_settings
-from app.core.errors import register_error_handlers
+from app.core.errors import register_error_handlers, validation_error_response
 from app.core.http import register_http_hooks
 from app.core.logging import configure_logging
 from app.extensions import build_limiter, cors
+from app.schemas.common import ErrorResponse
+from app.version import __version__
 
 
-def create_app(settings: Optional[Settings] = None) -> Flask:
-    """Application factory: cria e configura a aplicação Flask."""
+def create_app(settings: Optional[Settings] = None) -> OpenAPI:
+    """Application factory: cria e configura a aplicação Flask (com OpenAPI/Swagger)."""
     settings = settings or get_settings()
     configure_logging(settings.log_level)
 
-    app = Flask(__name__)
+    app = OpenAPI(
+        __name__,
+        info=Info(
+            title="Investimentos API",
+            version=__version__,
+            description="API da plataforma de consultoria financeira.",
+        ),
+        responses={429: ErrorResponse, 500: ErrorResponse},
+        validation_error_callback=validation_error_response,
+        doc_ui=settings.docs_on,  # desligado => nem a UI nem o openapi.json são expostos
+        doc_prefix="/docs",
+        doc_url="/openapi.json",
+    )
     app.config.update(
         SECRET_KEY=settings.secret_key,
         MAX_CONTENT_LENGTH=settings.max_content_length,

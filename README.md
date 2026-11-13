@@ -38,3 +38,14 @@ python -m ruff check . && python -m ruff format --check .
 |---|---|---|
 | GET | `/api/v1/hello` | Hello world |
 | GET | `/health` | Verificação de saúde (isenta de rate limit) |
+
+## Documentação da API (Swagger)
+
+Com o servidor rodando (fora de produção):
+
+- Swagger UI: <http://localhost:5055/docs/swagger>
+- Contrato OpenAPI: <http://localhost:5055/docs/openapi.json>
+
+A documentação é gerada dos schemas Pydantic das rotas (`app/schemas/`), então nunca diverge da
+validação. Os arquivos do Swagger UI são servidos localmente (sem CDN). **Em produção fica desligada
+por padrão**; para habilitar, defina `DOCS_ENABLED=true`.

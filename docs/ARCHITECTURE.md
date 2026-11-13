@@ -27,6 +27,7 @@ app/
     logging.py       logs JSON estruturados com request_id
   api/
     health.py        /health (liveness)
+  schemas/           modelos Pydantic (entrada/saída) — também geram o OpenAPI/Swagger
     v1/              rotas versionadas (/api/v1/...)
 wsgi.py              entrada WSGI (objeto `application`)
 scripts/check_env.py diagnóstico do servidor

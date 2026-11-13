@@ -8,6 +8,12 @@ import orjson
 from flask import Flask, Response, g, request
 from flask.json.provider import JSONProvider
 
+# A UI do Swagger precisa de scripts/estilos próprios (servidos do mesmo domínio, sem CDN).
+_DOCS_CSP = (
+    "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
+    "img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'"
+)
+_API_CSP = "default-src 'none'; frame-ancestors 'none'"
 _REQUEST_ID_RE = re.compile(r"^[A-Za-z0-9._-]{8,64}$")
 
 
@@ -43,7 +49,8 @@ def register_http_hooks(app: Flask, *, is_production: bool) -> None:
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Referrer-Policy"] = "no-referrer"
-        response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+        is_docs_page = request.path.startswith("/docs") and response.mimetype == "text/html"
+        response.headers["Content-Security-Policy"] = _DOCS_CSP if is_docs_page else _API_CSP
         response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
         response.headers.setdefault("Cache-Control", "no-store")
         if is_production:
