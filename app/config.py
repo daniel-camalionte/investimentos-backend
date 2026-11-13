@@ -1,16 +1,19 @@
 """Configuração tipada e validada a partir de variáveis de ambiente (.env em desenvolvimento)."""
 
 from functools import lru_cache
+from pathlib import Path
 from typing import Optional
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# .env na raiz do projeto, independente do diretório de trabalho do servidor WSGI
+_ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
 _INSECURE_KEY_MARKER = "troque-esta-chave"
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(env_file=_ENV_FILE, env_file_encoding="utf-8", extra="ignore")
 
     app_env: str = Field(default="development", pattern="^(development|production|testing)$")
     secret_key: str = f"{_INSECURE_KEY_MARKER}-em-desenvolvimento-somente"

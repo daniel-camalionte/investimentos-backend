@@ -48,7 +48,17 @@ python scripts/check_env.py
 Deve terminar com `RESULTADO: tudo certo`. Cole a saída aqui se algo falhar (ela mostra versão do
 Python, arquitetura, libc e quais dependências importam).
 
-## 5. Apontar o servidor web para a aplicação **(confirmar no painel)**
+## 5. Apontar o servidor web para a aplicação
+
+No painel "Frameworks Python - WSGI" crie a aplicação (Framework: **Outros**, tipo: raiz do domínio).
+O KingHost cria `/apps_wsgi/<nome>.wsgi` (exemplo web.py) e a pasta `/apps_wsgi/<nome>/`.
+
+1. Substitua o conteúdo de `<nome>.wsgi` por `deploy/kinghost/api.diagnostic.wsgi`, abra a URL e
+   confirme qual Python o servidor usa (deve ser 3.9, o mesmo do venv).
+2. Troque por `deploy/kinghost/api.wsgi` (ajuste `BASE` se necessário). Ele adiciona o venv ao
+   `sys.path` e expõe `application = create_app()`.
+
+Antigo (genérico):
 
 - Tipo: aplicação Python/WSGI (uWSGI ou Passenger).
 - Arquivo/módulo: `wsgi.py`, objeto `application`.
