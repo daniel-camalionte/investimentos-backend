@@ -1,6 +1,6 @@
 from typing import Optional
 
-from flask_openapi3 import Info, OpenAPI
+from flask_openapi3 import Info, OpenAPI, Server
 
 from app.api import register_blueprints
 from app.config import Settings, get_settings
@@ -24,6 +24,7 @@ def create_app(settings: Optional[Settings] = None) -> OpenAPI:
             version=__version__,
             description="API da plataforma de consultoria financeira.",
         ),
+        servers=[Server(url=settings.openapi_base_path or "/")],
         responses={429: ErrorResponse, 500: ErrorResponse},
         validation_error_callback=validation_error_response,
         doc_ui=settings.docs_on,  # desligado => nem a UI nem o openapi.json são expostos

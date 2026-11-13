@@ -25,10 +25,18 @@ class Settings(BaseSettings):
     database_url: Optional[str] = None
     # Documentação Swagger: padrão = ligada fora de produção. Defina DOCS_ENABLED para forçar.
     docs_enabled: Optional[bool] = None
+    # Prefixo onde a hospedagem monta a app (ex.: "/api" no KingHost). Usado só no OpenAPI/Swagger
+    # para o "Try it out" chamar a URL pública correta. Vazio quando a app está na raiz do domínio.
+    public_base_path: str = ""
 
     @property
     def is_production(self) -> bool:
         return self.app_env == "production"
+
+    @property
+    def openapi_base_path(self) -> str:
+        path = self.public_base_path.strip().strip("/")
+        return f"/{path}" if path else ""
 
     @property
     def docs_on(self) -> bool:

@@ -41,3 +41,14 @@ def test_docs_can_be_enabled_in_production():
         app_env="production", secret_key="x" * 40, docs_enabled=True, _env_file=None
     )
     assert create_app(settings).test_client().get("/docs/openapi.json").status_code == 200
+
+
+def test_openapi_server_uses_public_base_path():
+    settings = Settings(app_env="testing", public_base_path="/api/", _env_file=None)
+    spec = create_app(settings).test_client().get("/docs/openapi.json").get_json()
+    assert spec["servers"][0]["url"] == "/api"
+
+
+def test_openapi_server_defaults_to_root(client):
+    spec = client.get("/docs/openapi.json").get_json()
+    assert spec["servers"][0]["url"] == "/"
