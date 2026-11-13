@@ -85,3 +85,24 @@ testes iniciais), adicione `DOCS_ENABLED=true` ao `.env` do servidor e reinicie;
 - **Logs:** saem em JSON no stdout/stderr, que o uWSGI grava no log da aplicação.
 - **Python 3.9 está fora de suporte (EOL desde out/2025).** Vale pedir à KingHost uma versão mais
   nova; o código já é compatível com 3.9 e continua rodando em versões superiores.
+
+## Lições do primeiro deploy (KingHost)
+
+- **Servidor:** Apache + **mod_wsgi**, Python 3.9. O painel é "Frameworks Python - WSGI"
+  (Framework: *Outros*). Ele cria `/apps_wsgi/<nome>.wsgi` e a pasta `/apps_wsgi/<nome>/`.
+- **Pacotes do sistema atrapalham o venv.** Há bibliotecas antigas em `/usr/local/lib/python3.9/`
+  (ex.: `typing_extensions`). Se o venv for adicionado ao *fim* do `sys.path`, a versão do sistema
+  vence e o pydantic falha (`cannot import name 'Sentinel'`). O `deploy/kinghost/api.wsgi` coloca o
+  venv no *início*.
+- **O mod_wsgi reaproveita o processo** ao recarregar o `.wsgi`: o `sys.path` e os módulos da
+  tentativa anterior continuam em memória. O `api.wsgi` limpa esse estado a cada execução.
+- **Prefixo de montagem.** Com "Uma ou mais aplicações", a app fica em `/<nome-da-app>`. Com a app
+  chamada `api`, as rotas ficam em `/api/api/v1/hello`. Defina `PUBLIC_BASE_PATH=/api` no `.env`
+  para o Swagger ("Try it out") chamar a URL certa. Na raiz do domínio/subdomínio, deixe vazio.
+- **Mudanças:** código novo exige reiniciar a app (ou salvar o `.wsgi`); alterar só o `.env` não
+  basta, pois ele é lido na inicialização.
+- **Logs:** o erro do Python aparece no log de erros do Apache (painel). Mensagens
+  `ModSecurity: Audit log ... Permission denied` são do firewall da hospedagem e não indicam
+  problema na API.
+- **Checklist pós-teste:** remover `DOCS_ENABLED=true` do `.env` e trocar `CORS_ORIGINS` pelo
+  domínio real do frontend.
